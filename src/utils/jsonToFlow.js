@@ -2,7 +2,7 @@ const LEVEL_WIDTH = 900; // Fixed width for each level (column)
 const ATTRIBUTE_HEIGHT = 40; // Height of each attribute in pixels
 const NODE_PADDING = 100; // Increased padding between nodes
 
-export function jsonToFlow(json, setModalData, setPath) {
+export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
   const nodes = [];
   const edges = [];
   let nodeId = 0;
@@ -92,6 +92,7 @@ export function jsonToFlow(json, setModalData, setPath) {
           label,
           isArray: true,
           setModalData,
+          setModalDataModal,
           setPath,
           nodeData: obj,
           path,
@@ -121,7 +122,14 @@ export function jsonToFlow(json, setModalData, setPath) {
         id: currentId,
         type: "jsonNode",
         position: { x, y },
-        data: { label, setModalData, setPath, nodeData: obj, path },
+        data: {
+          label,
+          setModalData,
+          setModalDataModal,
+          setPath,
+          nodeData: obj,
+          path,
+        },
       });
 
       const simpleAttrs = [];
@@ -152,6 +160,7 @@ export function jsonToFlow(json, setModalData, setPath) {
             label: "Attributes",
             attributes: simpleAttrs,
             setModalData,
+            setModalDataModal,
             setPath,
             nodeData: obj,
             path,
@@ -191,6 +200,7 @@ export function jsonToFlow(json, setModalData, setPath) {
         data: {
           label: String(obj),
           setModalData,
+          setModalDataModal,
           setPath,
           nodeData: obj,
           path,

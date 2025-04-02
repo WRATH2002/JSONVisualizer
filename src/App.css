@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* .custom-default {
+  cursor: url("./assets/style/DefaultN.svg"), auto;
+}
+
+.custom-pointer {
+  cursor: url("/images/cursor-pointer.svg"), pointer;
+}
+
+.custom-grab {
+  cursor: url("./assets/style/move.svg"), grab;
+}
+
+.custom-text {
+  cursor: url("./assets/style/textN.svg"), text;
+}
+
+.custom-move {
+  cursor: url("./assets/style/textN.svg"), text;
+} */
+
+/* ------------------ */
+
 ::-webkit-scrollbar {
   height: 4px;
   width: 4px;
@@ -25,4 +47,145 @@
 }
 ::-webkit-scrollbar-corner {
   background: rgba(0, 0, 0, 0);
+}
+
+.react-flow__pane .react-flow__logo {
+  background-image: url("/path/to/your/logo.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* -------------------------- Fontssss ------------------------ */
+
+@font-face {
+  font-family: drr;
+  src: url(./assets/font/optionFont/Doto_Rounded-Regular.ttf);
+}
+@font-face {
+  font-family: dr;
+  src: url(./assets/font/optionFont/Doto-Regular.ttf);
+}
+@font-face {
+  font-family: mr;
+  src: url(./assets/font/optionFont/Montserrat-Regular.ttf);
+}
+@font-face {
+  font-family: nr;
+  src: url(./assets/font/optionFont/Nunito-Regular.ttf);
+}
+@font-face {
+  font-family: or;
+  src: url(./assets/font/optionFont/OpenSans-Regular.ttf);
+}
+@font-face {
+  font-family: pr;
+  src: url(./assets/font/optionFont/PlaywriteMXGuides-Regular.ttf);
+}
+@font-face {
+  font-family: rr;
+  src: url(./assets/font/optionFont/RobotoMono-Regular.ttf);
+}
+/* ----- */
+@font-face {
+  font-family: r;
+  src: url(./assets/font/optionFont/Roboto-Regular.ttf);
+}
+@font-face {
+  font-family: rsr;
+  src: url(./assets/font/optionFont/RobotoSlab-Regular.ttf);
+}
+@font-face {
+  font-family: smr;
+  src: url(./assets/font/optionFont/SyneMono-Regular.ttf);
+}
+@font-face {
+  font-family: tr;
+  src: url(./assets/font/optionFont/TitilliumWeb-Regular.ttf);
+}
+@font-face {
+  font-family: umr;
+  src: url(./assets/font/optionFont/UbuntuMono-Regular.ttf);
+}
+@font-face {
+  font-family: ur;
+  src: url(./assets/font/optionFont/Ubuntu-Regular.ttf);
+}
+@font-face {
+  font-family: v;
+  src: url(./assets/font/optionFont/verdana.ttf);
+}
+/* ---------------------- */
+
+@font-face {
+  font-family: mo;
+  src: url(./assets/font/optionFont/Mouser_o.ttf);
+}
+@font-face {
+  font-family: iub;
+  src: url(./assets/font/optionFont/IrishUncialfabeta-Bold.ttf);
+}
+
+/* @font-face {
+  font-family: sbitn;
+  src: url(./assets/font/optionFont/Stranger_back_in_the_Night.ttf);
+} */
+@font-face {
+  font-family: dt1;
+  src: url(./assets/font/optionFont/DraconianTypewritter001.ttf);
+}
+/* @font-face {
+  font-family: jspr;
+  src: url(./assets/font/optionFont/JotSprayPaintRegular-avOR.ttf);
+} */
+@font-face {
+  font-family: ot;
+  src: url(./assets/font/optionFont/Orange-Typewriter.ttf);
+}
+
+@font-face {
+  font-family: gr;
+  src: url(./assets/font/optionFont/EBGaramond-Regular.ttf);
+}
+
+@font-face {
+  font-family: sr;
+  src: url(./assets/font/optionFont/Syne-Regular.ttf);
+}
+/* @font-face {
+  font-family: wtdr;
+  src: url(./assets/font/optionFont/WanderlustTypewriterDemo-Regular.ttf);
+} */
+/* --------------------------------------------------------------------------------- */
+@font-face {
+  font-family: grm;
+  src: url(./assets/font/EBGaramond-Medium.ttf);
+}
+@font-face {
+  font-family: geistRegular;
+  src: url(./assets/font/Geist-Regular.ttf);
+}
+@font-face {
+  font-family: geistSemibold;
+  src: url(./assets/font/Geist-SemiBold.ttf);
+}
+@font-face {
+  font-family: geistBold;
+  src: url(./assets/font/Geist-Bold.ttf);
+}
+@font-face {
+  font-family: geistExtrabold;
+  src: url(./assets/font/Geist-ExtraBold.ttf);
+}
+@font-face {
+  font-family: geistMedium;
+  src: url(./assets/font/Geist-Medium.ttf);
+}
+@font-face {
+  font-family: geistLight;
+  src: url(./assets/font/Geist-Light.ttf);
+}
+@font-face {
+  font-family: recoleta;
+  src: url(./assets/font/Recoleta-RegularDEMO.otf);
 }

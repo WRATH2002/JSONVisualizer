@@ -9,11 +9,14 @@ export function JsonNode({ data }) {
     <>
       {/* {showModal ? <PopInfo /> : <></>} */}
       <div
-        className="py-2  rounded-[8px] bg-[#323a44] border-[1.5px] border-[#6d7b88] min-w-[150px] max-w-[700px]"
+        className="py-2  rounded-[8px] bg-[#212123] border-[1.5px] border-[#535358] hover:border-[#88d87d] min-w-[150px] max-w-[700px]"
         onClick={() => {
           console.log(data);
           console.log(data.setModalData);
           data.setModalData(data.attributes);
+          setTimeout(() => {
+            data.setModalDataModal(true);
+          }, 100);
           data.setPath(data.path);
         }}
       >
@@ -55,16 +58,18 @@ export function JsonNode({ data }) {
                         key={index}
                         className="text-sm w-full font-medium flex justify-start items-center whitespace-nowrap  px-4 "
                       >
-                        <span className="text-[#3fbcf6] mr-[7px]">
+                        <span className="text-[#9cdcfe] mr-[7px]">
                           {attr.key} :
                         </span>{" "}
                         <span
                           className={
                             "w-full whitespace-nowrap overflow-hidden text-ellipsis " +
                             (typeof attr.value == "number"
-                              ? " text-[#fddc21]"
+                              ? " text-[#dcdcaa]"
                               : typeof attr.value == "boolean"
                               ? " text-[#fe732d]"
+                              : typeof attr.value == "string"
+                              ? " text-[#ce9178]"
                               : " text-[#e2e2e2f8]")
                           }
                         >
@@ -73,7 +78,7 @@ export function JsonNode({ data }) {
                       </div>
                       <div
                         className={
-                          "w-full border-t-[1.5px] border-[#6d7b882a] my-[10px] mb-[7px]" +
+                          "w-full border-t-[1.5px] border-[#5353582a] my-[10px] mb-[7px]" +
                           (data.attributes.length - 1 == index
                             ? " hidden"
                             : " flex")
