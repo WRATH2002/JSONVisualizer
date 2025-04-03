@@ -109,22 +109,40 @@ function App() {
   const monaco = useMonaco(); // Get monaco instance
 
   useEffect(() => {
-    if (monaco) {
-      monaco.editor.defineTheme("customDark", {
-        base: "vs-dark",
-        inherit: true,
-        rules: [],
-        colors: {
-          "editor.background": "#161618", // Set editor background color
-          "editor.foreground": "#e2e2e2f8", // Text color
-          "editor.lineHighlightBackground": "#1e1e1e", // Highlight current line
-          "editorCursor.foreground": "#ffffff", // Cursor color
-        },
-      });
+    if (theme) {
+      if (monaco) {
+        monaco.editor.defineTheme("customDark", {
+          base: "vs-dark",
+          inherit: true,
+          rules: [],
+          colors: {
+            "editor.background": "#161618", // Set editor background color
+            "editor.foreground": "#e2e2e2f8", // Text color
+            "editor.lineHighlightBackground": "#1e1e1e", // Highlight current line
+            "editorCursor.foreground": "#ffffff", // Cursor color
+          },
+        });
 
-      monaco.editor.setTheme("customDark"); // Apply theme after defining
+        monaco.editor.setTheme("customDark"); // Apply theme after defining
+      }
+    } else {
+      if (monaco) {
+        monaco.editor.defineTheme("customDark", {
+          base: "vs-dark",
+          inherit: true,
+          rules: [],
+          colors: {
+            "editor.background": "#F6F6F6", // Set editor background color
+            "editor.foreground": "#e2e2e2f8", // Text color
+            "editor.lineHighlightBackground": "#1e1e1e", // Highlight current line
+            "editorCursor.foreground": "#ffffff", // Cursor color
+          },
+        });
+
+        monaco.editor.setTheme("customDark"); // Apply theme after defining
+      }
     }
-  }, [monaco]);
+  }, [monaco, theme]);
 
   useEffect(() => {
     console.log("modalData--------------------->");
@@ -317,6 +335,12 @@ function App() {
     return JSON.stringify(result, null, 2); // Converts object to formatted JSON string
   }
 
+  useEffect(() => {
+    console.log("localStorage");
+    console.log(localStorage);
+    setTheme(localStorage.getItem("JSONBeauty_theme") == "true" ? true : false);
+  }, []);
+
   return (
     <>
       {fileNameModal ? (
@@ -336,29 +360,42 @@ function App() {
       )}
       {/* <ReactFlowProvider> */}
       <div
-        className="flex flex-col w-full h-[100svh] justify-start items-start bg-[#232325] px-[8px] text-white font-[geistRegular]"
+        className={
+          "flex flex-col w-full h-[100svh] justify-start items-start px-[8px] font-[geistRegular]" +
+          (theme ? " bg-[#232325] text-[white]" : " bg-[white] text-[black]")
+        }
         onClick={() => {
           setViewExtend(false);
           setFileExtend(false);
           setToolsExtend(false);
         }}
       >
-        <div className="w-full h-[45px] bg-[#232325] overflow-visible px-[20px] flex justify-between items-center">
+        <div className="w-full h-[45px] overflow-visible px-[20px] flex justify-between items-center">
           <div className="flex justify-start items-center ml-[-18px]">
-            <div className="flex justify-start items-center ">
+            <div
+              className={
+                "flex justify-start items-center " +
+                (theme ? " text-[white]" : " text-[black]")
+              }
+            >
               <Pyramid
                 width={20}
                 height={20}
                 strokeWidth={2.5}
-                className=" text-[white] mr-[10px]"
+                className=" mr-[10px]"
               />
-              <h1 className="text-xl font-semibold text-[white] whitespace-nowrap font-[umr]">
+              <h1 className="text-xl font-semibold whitespace-nowrap font-[umr]">
                 JSON Beauty
               </h1>
             </div>
             <div className="flex flex-col justify-start items-start ml-[40px] h-[30px] w-[70px] overflow-visible text-[13px]">
               <div
-                className="flex justify-start items-center px-[10px] min-h-[30px] border-[1.5px] border-transparent  text-[#b8bcc1c7] hover:text-[white]  rounded-[8px]  "
+                className={
+                  "flex justify-start items-center px-[10px] min-h-[30px] border-[1.5px] border-transparent    rounded-[8px] cursor-pointer  " +
+                  (theme
+                    ? " text-[#b8bcc1c7] hover:text-[white]"
+                    : " text-[#2e2f30c7] hover:text-[#000000]")
+                }
                 onClick={(e) => {
                   e.stopPropagation();
                   setFileExtend(!fileExtend);
@@ -433,7 +470,12 @@ function App() {
             </div>{" "}
             <div className="flex flex-col justify-start items-start ml-[0px] h-[30px] w-[70px] overflow-visible text-[13px]">
               <div
-                className="flex justify-start items-center px-[10px] min-h-[30px] border-[1.5px] border-transparent  text-[#b8bcc1c7] hover:text-[white]  rounded-[8px]  cursor-pointer "
+                className={
+                  "flex justify-start items-center px-[10px] min-h-[30px] border-[1.5px] border-transparent   rounded-[8px]  cursor-pointer " +
+                  (theme
+                    ? " text-[#b8bcc1c7] hover:text-[white]"
+                    : " text-[#2e2f30c7] hover:text-[#000000]")
+                }
                 onClick={(e) => {
                   e.stopPropagation();
                   setViewExtend(!viewExtend);
@@ -477,34 +519,35 @@ function App() {
                     </label>
                   </div>
                 </div>
-                <label
+                {/* <label
                   className="flex w-full justify-between items-center mt-[4px] px-[7px] min-h-[30px] max-h-[30px] hover:bg-[#39393b] border-[1.5px] border-transparent  text-[#b8bcc1c7] hover:text-[white] rounded-[6px]  cursor-pointer whitespace-nowrap"
                   // style={{ transition: "2s", transitionDelay: ".4s" }}
 
                   onClick={(e) => {
                     e.stopPropagation();
                     setViewExtend(false);
+                    localStorage.setItem("JSONBeauty_theme", !theme);
                     setTheme(!theme);
                   }}
                 >
-                  {/* <SunMoon
-                    width={14}
-                    height={14}
-                    strokeWidth={2.4}
-                    className="mt-[2x] mr-[10px]"
-                  /> */}
+              
                   Dark Mode
                   {theme ? (
                     <Check width={14} height={14} strokeWidth={2.8} />
                   ) : (
                     <></>
                   )}
-                </label>
+                </label> */}
               </div>
             </div>{" "}
             <div className="flex flex-col justify-start items-start ml-[0px] h-[30px] w-[70px] overflow-visible text-[13px]">
               <div
-                className="flex justify-start items-center px-[10px] min-h-[30px] border-[1.5px] border-transparent  text-[#b8bcc1c7] hover:text-[white]  rounded-[8px]  cursor-pointer "
+                className={
+                  "flex justify-start items-center px-[10px] min-h-[30px] border-[1.5px] border-transparent   rounded-[8px]  cursor-pointer " +
+                  (theme
+                    ? " text-[#b8bcc1c7] hover:text-[white]"
+                    : " text-[#2e2f30c7] hover:text-[#000000]")
+                }
                 onClick={(e) => {
                   e.stopPropagation();
                   setToolsExtend(!toolsExtend);
@@ -579,18 +622,28 @@ function App() {
             {/* <span className="text-[13px] mr-[15px] text-[#b8bcc18d]">
               v 1.3.4.10
             </span> */}
-            <div className="w-[32px] h-[32px] rounded-[6px] mr-[-18px] text-[white] border-[1.5px] border-transparent hover:border-[#49494c] hover:bg-[#39393B] cursor-pointer flex justify-center items-center ">
+            <a
+              href="https://github.com/WRATH2002/JSONVisualizer"
+              target="_blank"
+              className="w-[32px] h-[32px] rounded-[6px] mr-[-18px] text-[white] border-[1.5px] border-transparent hover:border-[#49494c] hover:bg-[#39393B] cursor-pointer flex justify-center items-center "
+            >
               <Github width={18} height={18} strokeWidth={2} />
-            </div>
+            </a>
           </div>
         </div>
         <div className="w-full h-[calc(100%-83px)] flex flex-row justify-start items-start">
           <div
             style={{ width: leftSidebar ? `${leftWidth}px` : "0px" }}
-            className=" h-full bg-[#161618] rounded-l-xl overflow-hidden"
+            className={
+              " h-full  rounded-l-xl overflow-hidden" +
+              (theme ? " bg-[#161618]" : " bg-[#F6F6F6]")
+            }
           >
             <Editor
-              className="w-full h-full font-mono text-[14px] border-[2px] border-[#36363a] border-r-[0px] rounded-l-xl overflow-hidden cursor-text    "
+              className={
+                "w-full h-full font-mono text-[14px] border-[2px] border-r-[0px] rounded-l-xl overflow-hidden cursor-text    " +
+                (theme ? " border-[#36363a]" : " border-[#f0efef]")
+              }
               defaultLanguage="json"
               theme="customDark" // Use the custom theme
               value={jsonInput}
@@ -615,8 +668,9 @@ function App() {
           <div
             onMouseDown={handleMouseDown}
             className={
-              " cursor-ew-resize bg-[#36363a] h-full" +
-              (leftSidebar ? " w-[2px]" : " 0px")
+              " cursor-ew-resize h-full" +
+              (leftSidebar ? " w-[2px]" : " 0px") +
+              (theme ? " bg-[#36363a]" : " bg-[#f0efef]")
             }
           />
 
@@ -626,10 +680,13 @@ function App() {
               width: leftSidebar ? `calc(100% - ${leftWidth}px)` : "100%",
             }}
             className={
-              "bg-[#161618] h-full  border-[2px] border-[#36363a]  overflow-hidden inset-shadow-sm inset-[black]" +
+              "h-full  border-[2px] overflow-hidden " +
               (leftSidebar
                 ? " rounded-r-xl border-l-[0px]"
-                : " rounded-xl border-l-[2px]")
+                : " rounded-xl border-l-[2px]") +
+              (theme
+                ? " bg-[#161618] border-[#36363a]"
+                : " bg-[#F6F6F6] border-[#f0efef]")
             }
           >
             <ReactFlow
@@ -795,12 +852,12 @@ function App() {
                   <>
                     <div
                       key={index}
-                      className="flex justify-start items-center ml-[20px]"
+                      className="flex justify-start items-start ml-[20px]"
                     >
                       <span className="text-[#3fbcf6]">"{data.key}"</span> :{" "}
                       <span
                         className={
-                          "" +
+                          "whitespace-nowrap" +
                           (typeof data?.value == "number"
                             ? " text-[#dcdcaa]"
                             : typeof data?.value == "boolean"

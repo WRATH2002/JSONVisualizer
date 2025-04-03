@@ -48,7 +48,7 @@ export default function FileNameModal(props) {
           //   setFileNameModal(true);
         }}
       >
-        <span className="text-[14px] text-[#b8bcc1c7]">Enter filename</span>
+        <span className="text-[14px] text-[#b8bcc1c7]">JSON filename</span>
         <div className="w-full text-[13px] h-[40px] outline-none px-[15px] bg-[#161618] border-[1.5px] border-[#2a2a2d] mt-[10px] rounded-lg flex justify-start items-center">
           <input
             className="w-full h-[40px] outline-none  "

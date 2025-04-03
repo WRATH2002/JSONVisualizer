@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Panel, useReactFlow, getNodesBounds } from "reactflow";
 import { toPng } from "html-to-image";
-import { ImageDown } from "lucide-react";
+import { ImageDown, ImageIcon } from "lucide-react";
+import ImageNameModal from "./ImageNameModal";
 
 function downloadImage(dataUrl) {
   const a = document.createElement("a");
@@ -15,6 +16,9 @@ const padding = 50; // Padding around the content
 const backgroundColor = "#161618"; // Background color for the image
 
 function DownloadButton(props) {
+  const [imageModal, setImageModal] = useState(false);
+  const [modalAnime, setModalAnime] = useState(false);
+
   const { getNodes } = useReactFlow();
 
   const onClick = () => {
@@ -52,20 +56,39 @@ function DownloadButton(props) {
   };
 
   return (
-    <Panel position="top-right">
-      <button
-        className="px-[10px] mt-[-10px] mr-[-10px] h-[33px] rounded-lg flex justify-center items-center text-[14px] bg-[#232325] text-[#b8bcc1] hover:bg-[#39393b] hover:text-[white] cursor-pointer border-[1.5px] border-[#353538] hover:border-[#49494c] drop-shadow-lg"
-        onClick={onClick}
-      >
-        <ImageDown
-          width={15}
-          height={15}
-          strokeWidth={2}
-          className="mr-[7px]"
-        />{" "}
-        Export as image
-      </button>
-    </Panel>
+    <>
+      <Panel position="top-right">
+        <button
+          className="px-[10px] mt-[-10px] mr-[-10px] h-[33px] rounded-lg flex justify-center items-center text-[14px] bg-[#232325] text-[#b8bcc1] hover:bg-[#39393b] hover:text-[white] cursor-pointer border-[1.5px] border-[#353538] hover:border-[#49494c] drop-shadow-lg"
+          onClick={() => {
+            // onClick();
+            setImageModal(true);
+            setTimeout(() => {
+              setModalAnime(true);
+            }, 100);
+          }}
+        >
+          <ImageDown
+            width={15}
+            height={15}
+            strokeWidth={2}
+            className="mr-[7px]"
+          />{" "}
+          Export as image
+        </button>
+      </Panel>
+      {imageModal ? (
+        <ImageNameModal
+          setImageModal={setImageModal}
+          imageModal={imageModal}
+          setModalAnime={setModalAnime}
+          modalAnime={modalAnime}
+          setDownloading={props?.setDownloading}
+        />
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
 
