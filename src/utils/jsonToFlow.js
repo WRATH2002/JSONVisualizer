@@ -2,7 +2,13 @@ const LEVEL_WIDTH = 900; // Fixed width for each level (column)
 const ATTRIBUTE_HEIGHT = 40; // Height of each attribute in pixels
 const NODE_PADDING = 100; // Increased padding between nodes
 
-export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
+export function jsonToFlow(
+  json,
+  setModalData,
+  setModalDataModal,
+  setPath,
+  setTargetNode
+) {
   const nodes = [];
   const edges = [];
   let nodeId = 0;
@@ -83,6 +89,8 @@ export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
     const x = depth * LEVEL_WIDTH;
     const y = getNextVerticalPosition(depth, nodeHeight);
 
+    let connectedNodesCount = 0; // Track the number of connected nodes
+
     if (Array.isArray(obj)) {
       nodes.push({
         id: currentId,
@@ -91,9 +99,11 @@ export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
         data: {
           label,
           isArray: true,
+          length: obj.length, // Add length attribute for arrays
           setModalData,
           setModalDataModal,
           setPath,
+          setTargetNode,
           nodeData: obj,
           path,
         },
@@ -118,20 +128,6 @@ export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
         });
       });
     } else if (typeof obj === "object" && obj !== null) {
-      nodes.push({
-        id: currentId,
-        type: "jsonNode",
-        position: { x, y },
-        data: {
-          label,
-          setModalData,
-          setModalDataModal,
-          setPath,
-          nodeData: obj,
-          path,
-        },
-      });
-
       const simpleAttrs = [];
       const complexAttrs = [];
 
@@ -143,7 +139,26 @@ export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
         }
       });
 
+      // Add the node for the object
+      nodes.push({
+        id: currentId,
+        type: "jsonNode",
+        position: { x, y },
+        data: {
+          label,
+          length: 0, // Placeholder, will be updated later
+          setModalData,
+          setModalDataModal,
+          setTargetNode,
+          setPath,
+          nodeData: obj,
+          path,
+        },
+      });
+
+      // Add a node for simple attributes if they exist
       if (simpleAttrs.length > 0) {
+        connectedNodesCount++; // Increment connected nodes count
         const attrsId = `node-${nodeId++}`;
         const attrsY = getNextVerticalPosition(
           depth + 1,
@@ -161,6 +176,7 @@ export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
             attributes: simpleAttrs,
             setModalData,
             setModalDataModal,
+            setTargetNode,
             setPath,
             nodeData: obj,
             path,
@@ -174,8 +190,10 @@ export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
         });
       }
 
+      // Process complex attributes (nested objects/arrays)
       const totalComplexAttrs = complexAttrs.length;
       complexAttrs.forEach(([key, value], idx) => {
+        connectedNodesCount++; // Increment connected nodes count
         const childId = processObject(
           value,
           currentId,
@@ -192,6 +210,10 @@ export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
           type: "default",
         });
       });
+
+      // Update the length attribute for the object node
+      nodes.find((node) => node.id === currentId).data.length =
+        connectedNodesCount;
     } else {
       nodes.push({
         id: currentId,
@@ -201,6 +223,7 @@ export function jsonToFlow(json, setModalData, setModalDataModal, setPath) {
           label: String(obj),
           setModalData,
           setModalDataModal,
+          setTargetNode,
           setPath,
           nodeData: obj,
           path,

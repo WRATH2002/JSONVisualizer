@@ -2,7 +2,7 @@ import { Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
 import { Handle, Position } from "reactflow";
 // #ebe6e7 -- border color default
-export function JsonNode({ data }) {
+export function JsonNode({ data, id }) {
   const [showChild, setShowChild] = useState(true);
   const [showModal, setShowModal] = useState(false);
   return (
@@ -18,6 +18,8 @@ export function JsonNode({ data }) {
             data.setModalDataModal(true);
           }, 100);
           data.setPath(data.path);
+          // console.log(id);
+          // data?.setTargetNode(id);
         }}
       >
         <Handle type="target" position={Position.Left} className="w-2 h-2 " />
@@ -28,13 +30,33 @@ export function JsonNode({ data }) {
               (data.label == "Attributes" ? " hidden" : " flex")
             }
           >
-            {data.isArray ? `${data.label} []` : data.label}
+            {data.isArray ? (
+              <div className="flex justify-start items-center">
+                {data.label}{" "}
+                <span className="ml-[20px] text-[#e2e2e2f8]">
+                  [{data?.length}]
+                </span>
+              </div>
+            ) : (
+              <div className="flex justify-start items-center">
+                {data.label}{" "}
+                <span className="ml-[20px] text-[#e2e2e2f8]">{`{${data?.length}}`}</span>
+              </div>
+            )}
             <div
               className={
-                "h-[30px] w-[30px] flex justify-end cursor-pointer items-center text-[#e2e2e2f8] ml-[10px]" +
+                "h-[40px] w-[30px] flex justify-end cursor-pointer items-center text-[#e2e2e2f8] ml-[10px]" +
                 (data.label == "Attributes" ? " hidden" : " flex")
               }
-              onClick={() => setShowChild(!showChild)}
+              onClick={() => {
+                if (showChild) {
+                  data?.setTargetNode(id);
+                  setShowChild(false);
+                } else {
+                  data?.setTargetNode("");
+                  setShowChild(true);
+                }
+              }}
             >
               {!showChild ? (
                 <EyeClosed width={18} height={18} strokeWidth={1.9} />

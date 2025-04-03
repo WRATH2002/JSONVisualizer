@@ -105,6 +105,84 @@ function App() {
   const [theme, setTheme] = useState(true);
   const [leftSidebar, setLeftSidebar] = useState(true);
   const [modalDataModal, setModalDataModal] = useState(false);
+  const [targetNode, setTargetNode] = useState("");
+
+  // -------------------------------------
+
+  const [tempNodes, setTempNodes] = useState(
+    jsonToFlow(
+      sampleJson,
+      setModalData,
+      setModalDataModal,
+      setPath,
+      setTargetNode
+    ).nodes
+  );
+  const [tempEdges, setTempEdges] = useState(
+    jsonToFlow(
+      sampleJson,
+      setModalData,
+      setModalDataModal,
+      setPath,
+      setTargetNode
+    ).edges
+  );
+
+  // ---------------
+
+  function removeNodeAndConnectedEdges(nodeId, edges, nodes) {
+    let edgesNew = [...edges]; // Copy of edges
+    let nodesNew = [...nodes]; // Copy of nodes
+
+    let queue = [nodeId]; // Start with the given nodeId
+    let visited = new Set(); // Track visited nodes (except the given node)
+
+    while (queue.length > 0) {
+      let currentNode = queue.shift();
+      if (currentNode !== nodeId) {
+        visited.add(currentNode); // Mark as visited only if it's not the given node
+      }
+
+      // Find all edges where the source is the current node
+      let edgesToRemove = edgesNew.filter(
+        (edge) => edge.source === currentNode
+      );
+
+      // Collect target nodes to process next
+      let newTargets = edgesToRemove.map((edge) => edge.target);
+
+      // Remove those edges from edgesNew
+      edgesNew = edgesNew.filter((edge) => edge.source !== currentNode);
+
+      // Add new targets to queue if they haven't been visited
+      newTargets.forEach((target) => {
+        if (!visited.has(target)) {
+          queue.push(target);
+        }
+      });
+    }
+
+    // Remove nodes that were visited, but keep the node with the given ID
+    nodesNew = nodesNew.filter(
+      (node) => node.id === nodeId || !visited.has(node.id)
+    );
+
+    setEdges(edgesNew);
+    setNodes(nodesNew);
+
+    // return { edgesNew, nodesNew };
+  }
+
+  useEffect(() => {
+    if (targetNode.length == 0) {
+      setNodes(tempNodes);
+      setEdges(tempEdges);
+    } else {
+      removeNodeAndConnectedEdges(targetNode, edges, nodes);
+    }
+  }, [targetNode]);
+
+  // -----------------
 
   const monaco = useMonaco(); // Get monaco instance
 
@@ -149,23 +227,41 @@ function App() {
     console.log(modalData);
   }, [modalData]);
 
+  // --------------------------------------------------- Variables ------------------------
+
   const [jsonInput, setJsonInput] = useState(
     JSON.stringify(sampleJson, null, 2)
   );
   const [nodes, setNodes] = useState(
-    jsonToFlow(sampleJson, setModalData, setModalDataModal, setPath).nodes
+    jsonToFlow(
+      sampleJson,
+      setModalData,
+      setModalDataModal,
+      setPath,
+      setTargetNode
+    ).nodes
   );
   const [edges, setEdges] = useState(
-    jsonToFlow(sampleJson, setModalData, setModalDataModal, setPath).edges
+    jsonToFlow(
+      sampleJson,
+      setModalData,
+      setModalDataModal,
+      setPath,
+      setTargetNode
+    ).edges
   );
   const [error, setError] = useState("");
 
+  // ---------------------------------------------------------------------------------------
+
   const onNodesChange = useCallback((changes) => {
     setNodes((nds) => applyNodeChanges(changes, nds));
+    setTempNodes((nds) => applyNodeChanges(changes, nds));
   }, []);
 
   const onEdgesChange = useCallback((changes) => {
     setEdges((eds) => applyEdgeChanges(changes, eds));
+    setTempEdges((eds) => applyEdgeChanges(changes, eds));
   }, []);
 
   const handleJsonChange = (e) => {
@@ -176,11 +272,14 @@ function App() {
         parsed,
         setModalData,
         setModalDataModal,
-        setPath
+        setPath,
+        setTargetNode
       );
       setNodes(newNodes);
+      setTempNodes(newNodes);
       console.log(newNodes);
       setEdges(newEdges);
+      setTempEdges(newEdges);
       setError("");
     } catch (err) {
       setError("Invalid JSON format");
@@ -195,11 +294,14 @@ function App() {
         parsed,
         setModalData,
         setModalDataModal,
-        setPath
+        setPath,
+        setTargetNode
       );
       setNodes(newNodes);
+      setTempNodes(newNodes);
       console.log(newNodes);
       setEdges(newEdges);
+      setTempEdges(newEdges);
       setError("");
     } catch (err) {
       setError("Invalid JSON format");
@@ -288,11 +390,14 @@ function App() {
         parsed,
         setModalData,
         setModalDataModal,
-        setPath
+        setPath,
+        setTargetNode
       );
       setNodes(newNodes);
+      setTempNodes(newNodes);
       console.log(newNodes);
       setEdges(newEdges);
+      setTempEdges(newEdges);
       setError("");
     } catch (err) {
       setError("Invalid JSON format");
@@ -383,6 +488,12 @@ function App() {
                 height={20}
                 strokeWidth={2.5}
                 className=" mr-[10px]"
+                onClick={() => {
+                  console.log("Nodes");
+                  console.log(nodes);
+                  console.log("Edges");
+                  console.log(edges);
+                }}
               />
               <h1 className="text-xl font-semibold whitespace-nowrap font-[umr]">
                 JSON Beauty
