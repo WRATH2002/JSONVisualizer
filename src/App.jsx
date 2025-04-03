@@ -335,11 +335,11 @@ function App() {
     return JSON.stringify(result, null, 2); // Converts object to formatted JSON string
   }
 
-  useEffect(() => {
-    console.log("localStorage");
-    console.log(localStorage);
-    setTheme(localStorage.getItem("JSONBeauty_theme") == "true" ? true : false);
-  }, []);
+  // useEffect(() => {
+  //   console.log("localStorage");
+  //   console.log(localStorage);
+  //   setTheme(localStorage.getItem("JSONBeauty_theme") == "true" ? true : false);
+  // }, []);
 
   return (
     <>
