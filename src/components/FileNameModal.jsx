@@ -84,7 +84,7 @@ export default function FileNameModal(props) {
             className={
               "bg-[#39393b]  border-[1.5px] border-[#49494c]  text-[#a7acb2] text-[13px] flex justify-center items-center h-[28px] px-[7px] rounded-[5px] " +
               (props?.fileName.length === 0
-                ? "opacity-50 cursor-not-allowed hover:bg-[#39393b] hover:border-[#49494c] hover:text-[#a7acb2]"
+                ? " opacity-50 cursor-not-allowed hover:bg-[#39393b] hover:border-[#49494c] hover:text-[#a7acb2]"
                 : " opacity-100 cursor-pointer hover:bg-[#49494b] hover:border-[#57575a] hover:text-[#ffffff]")
             }
             onClick={() => {

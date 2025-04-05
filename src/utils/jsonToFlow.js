@@ -7,6 +7,7 @@ export function jsonToFlow(
   setModalData,
   setModalDataModal,
   setPath,
+  searchNodeArr,
   setTargetNode
 ) {
   const nodes = [];
@@ -103,6 +104,7 @@ export function jsonToFlow(
           setModalData,
           setModalDataModal,
           setPath,
+          searchNodeArr,
           setTargetNode,
           nodeData: obj,
           path,
@@ -151,6 +153,7 @@ export function jsonToFlow(
           setModalDataModal,
           setTargetNode,
           setPath,
+          searchNodeArr,
           nodeData: obj,
           path,
         },
@@ -178,6 +181,7 @@ export function jsonToFlow(
             setModalDataModal,
             setTargetNode,
             setPath,
+            searchNodeArr,
             nodeData: obj,
             path,
           },
@@ -225,6 +229,7 @@ export function jsonToFlow(
           setModalDataModal,
           setTargetNode,
           setPath,
+          searchNodeArr,
           nodeData: obj,
           path,
         },

@@ -1,15 +1,25 @@
 import { Eye, EyeClosed } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Handle, Position } from "reactflow";
 // #ebe6e7 -- border color default
 export function JsonNode({ data, id }) {
   const [showChild, setShowChild] = useState(true);
   const [showModal, setShowModal] = useState(false);
+
+  const temp1 = useSelector((store) => store.data.searchNodeArr);
+
+  useEffect(() => {}, [data?.searchNodeArr]);
   return (
     <>
       {/* {showModal ? <PopInfo /> : <></>} */}
       <div
-        className="py-2  rounded-[8px] bg-[#212123] border-[1.5px] border-[#535358] hover:border-[#88d87d] min-w-[150px] max-w-[700px]"
+        className={
+          "py-2  rounded-[8px]  border-[1.5px] hover:border-[#88d87d] min-w-[150px] max-w-[700px]" +
+          (temp1?.includes(id)
+            ? " border-[#88d87d] bg-[#21331f]"
+            : " border-[#535358] bg-[#212123]")
+        }
         onClick={() => {
           console.log(data);
           console.log(data.setModalData);
@@ -100,10 +110,13 @@ export function JsonNode({ data, id }) {
                       </div>
                       <div
                         className={
-                          "w-full border-t-[1.5px] border-[#5353582a] my-[10px] mb-[7px]" +
+                          "w-full border-t-[1.5px] my-[10px] mb-[7px]" +
                           (data.attributes.length - 1 == index
                             ? " hidden"
-                            : " flex")
+                            : " flex") +
+                          (temp1?.includes(id)
+                            ? " border-[#244420]"
+                            : " border-[#5353582a]")
                         }
                       ></div>
                     </>
