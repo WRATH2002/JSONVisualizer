@@ -917,7 +917,7 @@ function App() {
                 <span className="text-[12px] mr-[25px] flex justify-start items-center whitespace-nowrap">
                   Edges : {edges.length}
                 </span>
-                <span className="text-[12px] text-[#b8bcc18d]">v 1.3.4.10</span>
+                <span className="text-[12px] text-[#b8bcc18d]">v 2.3.4.10</span>
               </div>
             </div>
             {jsonQModal ? (
