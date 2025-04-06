@@ -1,4 +1,35 @@
-Remaining Features or Bugs ------------>
+Features to be included ------------>
 
-1. Solve the node overlapping problem and well structure the nodes
-2. Smooth animated fitView in file loading
+1. Text Editor on Left -> ✅ done
+2. Collapse text editor -> ✅ done
+3. ReactFlow canvas -> ✅ done
+4. Github repo link -> ✅ done
+5. Validation of JSON input -> ✅ done
+6. Custom canavs controller -> ✅ done
+7. Search nodes/ elements -> ✅ done
+8. Total nodes and edges -> ✅ done
+9. Download nodes as a photo in svg,png,jpg -> ✅ done
+10. Import JSON File -> ✅ done
+11. Export JSON file -> ✅ done
+12. Graph view -> ✅ done
+13. Tree view -> ✅ done
+14. Dark Mode view -> ✅ done
+15. JSON path -> ✅ done
+16. Interactive Nodes to show data and path -> ✅ done
+17. Show node on canvas -> ✅ done
+18. Show node and its child nodes only in canvas -> ✅ done
+19. Smooth animated fitView in file loading -> ✅ done
+20. Show original structure button on change of nodes -> ✅ done
+
+
+
+Problems to be solved ---------------> 
+
+1. Solve the node overlapping problem and well structure the nodes -> ✅ done
+
+
+
+Conclusion -------------------------->
+
+All the features are implemented properly ...
+Project almost finished ...

@@ -1,6 +1,6 @@
-const LEVEL_WIDTH = 900; // Fixed width for each level (column)
-const ATTRIBUTE_HEIGHT = 40; // Height of each attribute in pixels
-const NODE_PADDING = 100; // Increased padding between nodes
+const LEVEL_WIDTH = 900;
+const ATTRIBUTE_HEIGHT = 41.5; // Per your request
+const NODE_SPACING = 25; // Reduced gap between nodes in same column
 
 export function jsonToFlow(
   json,
@@ -13,10 +13,8 @@ export function jsonToFlow(
   const nodes = [];
   const edges = [];
   let nodeId = 0;
-  const levelNodes = new Map(); // Track nodes for each level
-  const levelPositions = new Map(); // Track vertical positions for each level
+  const levelMap = new Map();
 
-  // Helper function to calculate the height of a node
   function calculateNodeHeight(obj) {
     let attributesCount = 0;
     if (Array.isArray(obj)) {
@@ -28,52 +26,18 @@ export function jsonToFlow(
       const complexAttrs = Object.entries(obj).filter(
         ([_, value]) => typeof value === "object" && value !== null
       ).length;
-      attributesCount = Math.max(simpleAttrs, complexAttrs);
+      attributesCount = simpleAttrs > 0 ? simpleAttrs : complexAttrs;
     } else {
       attributesCount = 1;
     }
     return (attributesCount + 1) * ATTRIBUTE_HEIGHT;
   }
 
-  // First pass: Collect nodes for each level
-  function collectNodesForLevel(obj, depth = 0) {
-    if (!levelNodes.has(depth)) {
-      levelNodes.set(depth, []);
+  function addToLevelMap(depth, node) {
+    if (!levelMap.has(depth)) {
+      levelMap.set(depth, []);
     }
-
-    levelNodes.get(depth).push(obj);
-
-    if (Array.isArray(obj)) {
-      obj.forEach((item) => collectNodesForLevel(item, depth + 1));
-    } else if (typeof obj === "object" && obj !== null) {
-      Object.values(obj).forEach((value) => {
-        if (typeof value === "object" && value !== null) {
-          collectNodesForLevel(value, depth + 1);
-        }
-      });
-    }
-  }
-
-  // Get next available vertical position for a level
-  function getNextVerticalPosition(depth, nodeHeight) {
-    if (!levelPositions.has(depth)) {
-      // Calculate total height for this level
-      const nodesInLevel = levelNodes.get(depth) || [];
-      const totalHeight = nodesInLevel.reduce(
-        (sum, node) => sum + calculateNodeHeight(node) + NODE_PADDING,
-        0
-      );
-
-      // Set initial position to center the nodes
-      const startY = -totalHeight / 2;
-      levelPositions.set(depth, startY);
-      return startY;
-    }
-
-    const currentPosition = levelPositions.get(depth);
-    const newPosition = currentPosition + nodeHeight + NODE_PADDING;
-    levelPositions.set(depth, newPosition);
-    return currentPosition;
+    levelMap.get(depth).push(node);
   }
 
   function processObject(
@@ -87,37 +51,39 @@ export function jsonToFlow(
   ) {
     const currentId = `node-${nodeId++}`;
     const nodeHeight = calculateNodeHeight(obj);
-    const x = depth * LEVEL_WIDTH;
-    const y = getNextVerticalPosition(depth, nodeHeight);
 
-    let connectedNodesCount = 0; // Track the number of connected nodes
+    const nodeData = {
+      id: currentId,
+      type: "jsonNode",
+      position: { x: depth * LEVEL_WIDTH, y: 0 },
+      data: {
+        label,
+        isArray: Array.isArray(obj),
+        length: Array.isArray(obj) ? obj.length : 0,
+        setModalData,
+        setModalDataModal,
+        setPath,
+        searchNodeArr,
+        setTargetNode,
+        nodeData: obj,
+        path,
+      },
+      custom: {
+        depth,
+        height: nodeHeight,
+      },
+    };
+
+    nodes.push(nodeData);
+    addToLevelMap(depth, nodeData);
 
     if (Array.isArray(obj)) {
-      nodes.push({
-        id: currentId,
-        type: "jsonNode",
-        position: { x, y },
-        data: {
-          label,
-          isArray: true,
-          length: obj.length, // Add length attribute for arrays
-          setModalData,
-          setModalDataModal,
-          setPath,
-          searchNodeArr,
-          setTargetNode,
-          nodeData: obj,
-          path,
-        },
-      });
-
-      const childCount = obj.length;
       obj.forEach((item, idx) => {
         const childId = processObject(
           item,
           currentId,
           depth + 1,
-          childCount,
+          obj.length,
           idx,
           `[${idx}]`,
           `${path}[${idx}]`
@@ -141,39 +107,13 @@ export function jsonToFlow(
         }
       });
 
-      // Add the node for the object
-      nodes.push({
-        id: currentId,
-        type: "jsonNode",
-        position: { x, y },
-        data: {
-          label,
-          length: 0, // Placeholder, will be updated later
-          setModalData,
-          setModalDataModal,
-          setTargetNode,
-          setPath,
-          searchNodeArr,
-          nodeData: obj,
-          path,
-        },
-      });
-
-      // Add a node for simple attributes if they exist
       if (simpleAttrs.length > 0) {
-        connectedNodesCount++; // Increment connected nodes count
         const attrsId = `node-${nodeId++}`;
-        const attrsY = getNextVerticalPosition(
-          depth + 1,
-          ATTRIBUTE_HEIGHT * simpleAttrs.length
-        );
-        nodes.push({
+        const attrsHeight = ATTRIBUTE_HEIGHT * (simpleAttrs.length + 1);
+        const attrsNode = {
           id: attrsId,
           type: "jsonNode",
-          position: {
-            x: x + LEVEL_WIDTH,
-            y: attrsY,
-          },
+          position: { x: (depth + 1) * LEVEL_WIDTH, y: 0 },
           data: {
             label: "Attributes",
             attributes: simpleAttrs,
@@ -185,7 +125,13 @@ export function jsonToFlow(
             nodeData: obj,
             path,
           },
-        });
+          custom: {
+            depth: depth + 1,
+            height: attrsHeight,
+          },
+        };
+        nodes.push(attrsNode);
+        addToLevelMap(depth + 1, attrsNode);
         edges.push({
           id: `edge-${currentId}-${attrsId}`,
           source: currentId,
@@ -194,15 +140,12 @@ export function jsonToFlow(
         });
       }
 
-      // Process complex attributes (nested objects/arrays)
-      const totalComplexAttrs = complexAttrs.length;
       complexAttrs.forEach(([key, value], idx) => {
-        connectedNodesCount++; // Increment connected nodes count
         const childId = processObject(
           value,
           currentId,
           depth + 1,
-          totalComplexAttrs,
+          complexAttrs.length,
           idx,
           key,
           `${path}.${key}`
@@ -214,34 +157,39 @@ export function jsonToFlow(
           type: "default",
         });
       });
-
-      // Update the length attribute for the object node
-      nodes.find((node) => node.id === currentId).data.length =
-        connectedNodesCount;
-    } else {
-      nodes.push({
-        id: currentId,
-        type: "jsonNode",
-        position: { x, y },
-        data: {
-          label: String(obj),
-          setModalData,
-          setModalDataModal,
-          setTargetNode,
-          setPath,
-          searchNodeArr,
-          nodeData: obj,
-          path,
-        },
-      });
     }
 
     return currentId;
   }
 
-  // Initialize by collecting all nodes per level first
-  collectNodesForLevel(json);
-  // Then process the nodes with vertical centering
   processObject(json);
+
+  // --- Layout: Assign Y positions column-wise ---
+  for (const [depth, levelNodes] of levelMap.entries()) {
+    let totalHeight = levelNodes.reduce(
+      (sum, node) => sum + node.custom.height,
+      0
+    );
+    let totalSpacing = (levelNodes.length - 1) * NODE_SPACING;
+    let columnHeight = totalHeight + totalSpacing;
+    let startY = -columnHeight / 2;
+
+    for (let node of levelNodes) {
+      node.position.y = startY;
+      startY += node.custom.height + NODE_SPACING;
+    }
+  }
+
+  // --- Center everything vertically so root is centered ---
+  const yPositions = nodes.map((n) => n.position.y);
+  const minY = Math.min(...yPositions);
+  const maxY = Math.max(...yPositions);
+  const centerOffset = (maxY + minY) / 2;
+
+  for (let node of nodes) {
+    node.position.y -= centerOffset;
+    delete node.custom;
+  }
+
   return { nodes, edges };
 }

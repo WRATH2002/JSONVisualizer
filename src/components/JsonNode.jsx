@@ -15,7 +15,7 @@ export function JsonNode({ data, id }) {
       {/* {showModal ? <PopInfo /> : <></>} */}
       <div
         className={
-          "py-2  rounded-[8px]  border-[1.5px] hover:border-[#88d87d] min-w-[150px] max-w-[700px]" +
+          "  rounded-[8px]  border-[1.5px] hover:border-[#88d87d] min-w-[150px] max-w-[700px]" +
           (temp1?.includes(id)
             ? " border-[#88d87d] bg-[#21331f]"
             : " border-[#535358] bg-[#212123]")
@@ -33,10 +33,10 @@ export function JsonNode({ data, id }) {
         }}
       >
         <Handle type="target" position={Position.Left} className="w-2 h-2 " />
-        <div className="font-mono w-full">
+        <div className="font-mono w-full h-auto">
           <div
             className={
-              "font-medium w-full text-[#f6a03f] px-4 flex justify-between items-center " +
+              "font-medium h-[40px] w-full text-[#f6a03f] px-4 flex justify-between items-center " +
               (data.label == "Attributes" ? " hidden" : " flex")
             }
           >
@@ -80,15 +80,23 @@ export function JsonNode({ data, id }) {
               {data.attributes && (
                 <div
                   className={
-                    " space-y-1 w-full" +
-                    (data.label == "Attributes" ? " mt-0" : " mt-2")
+                    " w-full" + (data.label == "Attributes" ? " mt-0" : " mt-2")
                   }
                 >
                   {data.attributes.map((attr, index) => (
                     <>
                       <div
                         key={index}
-                        className="text-sm w-full font-medium flex justify-start items-center whitespace-nowrap  px-4 "
+                        className={
+                          "text-[14px] h-[40px] w-full font-medium flex justify-start items-center whitespace-nowrap  px-4 " +
+                          (data.attributes.length - 1 == index
+                            ? temp1?.includes(id)
+                              ? " border-b-[1.5px] border-transparent"
+                              : " border-b-[1.5px] border-transparent"
+                            : temp1?.includes(id)
+                            ? " border-b-[1.5px] border-[#244420]"
+                            : " border-b-[1.5px] border-[#5353582a]")
+                        }
                       >
                         <span className="text-[#9cdcfe] mr-[7px]">
                           {attr.key} :
@@ -108,7 +116,7 @@ export function JsonNode({ data, id }) {
                           {JSON.stringify(attr.value)}
                         </span>
                       </div>
-                      <div
+                      {/* <div
                         className={
                           "w-full border-t-[1.5px] my-[10px] mb-[7px]" +
                           (data.attributes.length - 1 == index
@@ -118,7 +126,7 @@ export function JsonNode({ data, id }) {
                             ? " border-[#244420]"
                             : " border-[#5353582a]")
                         }
-                      ></div>
+                      ></div> */}
                     </>
                   ))}
                 </div>

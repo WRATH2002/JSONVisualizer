@@ -23,6 +23,21 @@ const CustomControls = (props) => {
     return str1.toLowerCase().includes(str2.toLowerCase());
   }
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     fitView({ duration: 800 });
+  //   }, 50);
+  // }, [props?.nodes, props?.edges]);
+
+  useEffect(() => {
+    if (props?.changed) {
+      setTimeout(() => {
+        fitView({ duration: 800 });
+      }, 50);
+      props?.setChanged(false);
+    }
+  }, [props?.changed]);
+
   function getResultArray() {
     // props?.nodes
     let tempArr = [];
@@ -92,6 +107,8 @@ const CustomControls = (props) => {
     const timer = setTimeout(() => {
       if (searchPrompt.length === 0) {
         dispatch(clearSearchNodeArr());
+        setTempSearchPrompt("");
+        fitView({ duration: 800 });
       } else if (searchPrompt == tempSearchPrompt) {
         if (props?.currZoomIndex + 1 >= temp1?.length) {
           handleZoom(temp1[0]);
@@ -104,7 +121,7 @@ const CustomControls = (props) => {
         console.log("calling getResultArray()");
         getResultArray();
       }
-    }, 800);
+    }, 300);
     return () => {
       clearTimeout(timer);
     };
@@ -154,6 +171,7 @@ const CustomControls = (props) => {
               // console.log(tempSearchPrompt, searchPrompt);
               if (searchPrompt?.length === 0) {
                 dispatch(clearSearchNodeArr());
+                setTempSearchPrompt("");
               } else if (searchPrompt == tempSearchPrompt) {
                 if (props?.currZoomIndex + 1 >= temp1?.length) {
                   handleZoom(temp1[0]);

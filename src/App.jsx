@@ -111,6 +111,7 @@ function App() {
   const [modalDataModal, setModalDataModal] = useState(false);
   const [targetNode, setTargetNode] = useState("");
   const [searchNodeArr, setSearchNodeArr] = useState(["node-2", "node-5"]);
+  const [changed, setChanged] = useState(false);
 
   // -------------------------------------
 
@@ -333,8 +334,10 @@ function App() {
         searchNodeArr,
         setTargetNode
       );
+
       setNodes(newNodes);
       setTempNodes(newNodes);
+      setChanged(true);
       console.log(newNodes);
       setEdges(newEdges);
       setTempEdges(newEdges);
@@ -418,6 +421,7 @@ function App() {
       );
       setNodes(newNodes);
       setTempNodes(newNodes);
+      setChanged(true);
       console.log(newNodes);
       setEdges(newEdges);
       setTempEdges(newEdges);
@@ -462,10 +466,6 @@ function App() {
 
     return JSON.stringify(result, null, 2); // Converts object to formatted JSON string
   }
-
-  useEffect(() => {
-    setTimeout(() => {}, 200);
-  }, [nodes, edges]);
 
   return (
     <>
@@ -791,6 +791,18 @@ function App() {
                       alwaysConsumeMouseWheel: false,
                     },
                   }}
+                  loading={
+                    <div className="w-full h-full flex items-center justify-center text-[#b8bcc197]">
+                      <l-ring-2
+                        size="30"
+                        stroke="3"
+                        stroke-length="0.25"
+                        bg-opacity="0.1"
+                        speed="0.8"
+                        color="black"
+                      ></l-ring-2>
+                    </div>
+                  }
                 />
 
                 {/* {error && <p className="mt-2 text-sm text-red-600">{error}</p>}  */}
@@ -849,6 +861,8 @@ function App() {
                     searchNodeArr={searchNodeArr}
                     setCurrZoomIndex={setCurrZoomIndex}
                     currZoomIndex={currZoomIndex}
+                    changed={changed}
+                    setChanged={setChanged}
                   />
 
                   <DownloadButton setDownloading={setDownloading} />
